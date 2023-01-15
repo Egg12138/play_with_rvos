@@ -1,4 +1,5 @@
 #include "types.h"
+// #include "defs.h", 用的函数少，先不搞分离了。
 #define LEN 8
 extern void page_init(void);
 extern void uart_init(void);
@@ -10,6 +11,7 @@ extern int uart_putc(char c);
 extern void schedule(void);
 extern void sched_init(void);
 extern void os_main(void);
+extern void trap_init(void);
 /*
  * 1. 初始化
  * 2. 读写 
@@ -23,6 +25,7 @@ void start_kernel(void)
 	uart_putstr("Hello, RVOS!\n");
     page_init();
     page_test();
+    trap_init();
     uart_puts("Loop...");
     sched_init();
     uart_puts("schedule finished...\n");

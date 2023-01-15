@@ -83,6 +83,37 @@
 
 .text
 
+.globl trap_vector
+# 4-bytes对齐
+.align 4
+trap_vector:
+	# 先保存上下文
+	csrrw	t6, mscratch, t6
+	reg_save t6
+	# reg_save mscratch # 直接这两行不行？
+	# csrr t6, mscratch 
+	mv t5, t6
+	csrr t6, mscratch
+	sw t6, 120(t5)
+
+	csrw mscratch, t5
+	sw t6, 120(t5) # 将t6的4bytes -> x[t5]+120内存处, 作为Base address
+
+	csrw mscratch, t5
+
+	csrr a0, mepc
+	csrr a1, mcause
+	call trap_handler
+
+	csrw mepc, a0
+
+	csrr t6, mscratch
+	reg_restore t6
+	mret
+
+
+
+
 # void switch_to(struct context *next);
 # a0: pointer to the context of the next task
 .globl switch_to
