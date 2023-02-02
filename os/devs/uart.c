@@ -1,5 +1,4 @@
-#include "types.h"
-#include "platform.h"
+#include "os.h"
 
 /*
  * The UART control registers are memory-mapped at address UART0. 
@@ -135,6 +134,10 @@ void uart_init()
 	 */
 	lcr = 0;
 	uart_write_reg(LCR, lcr | (3 << 0));
+
+	// 打开中断控制器
+	uint8_t ier = uart_read_reg(IER);
+	uart_write_reg(IER,  ier | (1 << 0));
 }
 
 int uart_putc(char ch)
@@ -147,40 +150,38 @@ int uart_putc(char ch)
 
 char uart_getc()
 {
-	// Check Line Status: 
-	while (!(uart_read_reg(LSR) & LSR_RX_READY ));
-	char charin = uart_read_reg(RHR);
-	// 再内部调用uart_putc(charin)实现回显的consol
-	uart_putc(charin);
-
-	return charin;	
-}
-
-
-void *uart_gets(char *buf, uint8_t length) 
-{
-
-	for (uint8_t counter = 0; counter < length; counter++) {
-		char charin = uart_getc();
-		if (charin == '\b')	*buf++ = '!'; 	
-		else {
-			*buf++ = charin;
-			if (charin == '\n') break;
-		}
-
+	if (uart_read_reg(LSR) & LSR_RX_READY) {
+		return uart_read_reg(RHR);
+	} else {
+		return -1;
 	}
-
 }
-void uart_putstr(char *s)
-{
+
+
+// void *uart_gets(char *buf, uint8_t length) 
+// {
+
+// 	for (uint8_t counter = 0; counter < length; counter++) {
+// 		char charin = uart_getc();
+// 		if (charin == '\b')	*buf++ = '!'; 	
+// 		else {
+// 			*buf++ = charin;
+// 			if (charin == '\n') break;
+// 		}
+
+// 	}
+
+// // }
+// void uart_putstr(char *s)
+// {
 	
-	uart_putc('\n');	
-	while (*s) {
-		while ((uart_read_reg(LSR) & LSR_TX_IDLE) == 0  );
-		uart_write_reg(THR, *s++);
+// 	uart_putc('\n');	
+// 	while (*s) {
+// 		while ((uart_read_reg(LSR) & LSR_TX_IDLE) == 0  );
+// 		uart_write_reg(THR, *s++);
 
-	}	
-}
+// 	}	
+// }
 
 void uart_puts(char *s)
 {
@@ -189,3 +190,14 @@ void uart_puts(char *s)
 	}
 }
 
+void uart_isr(void)
+{
+	while(1) {
+		int c = uart_getc();
+		if (c == -1) break;
+		else {
+			uart_putc((char)c);
+			uart_putc('\n');
+		} 
+	}
+}

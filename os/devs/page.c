@@ -86,10 +86,10 @@ void page_init()
 	}
 	// 实际的物理页分布:
 	_alloc_start = _align_page(HEAP_START + RESERVERED_NUM * PAGE_SIZE);
-	_alloc_end = _alloc_start + HEAP_SIZE - RESERVERED_NUM * PAGE_SIZE;
+	_alloc_end = _alloc_start + (PAGE_SIZE * _num_pages);
 
 	PTE *textptr = (void *)TEXT_START;	 
-	printf(".text:   0x%x -> 0x%x, %x\n", TEXT_START, TEXT_END, *textptr);
+	printf(".text:   0x%x -> 0x%x, textptr -> %x\n", TEXT_START, TEXT_END, *textptr);
 	printf(".rodata: 0x%x -> 0x%x\n", RODATA_START, RODATA_END);
 	printf(".data:   0x%x -> 0x%x\n", DATA_START, DATA_END);
 	printf(".bss:    0x%x -> 0x%x\n", BSS_START, BSS_END);
@@ -146,8 +146,6 @@ void *page_alloc(int npages)
 
 void page_free(void *head_addr)
 {
-	_alloc_start = _align_page(HEAP_START + RESERVERED_NUM * PAGE_SIZE);
-	_alloc_end = _alloc_start + HEAP_SIZE - RESERVERED_NUM * PAGE_SIZE;
 	if (!head_addr || (uint32_t)head_addr >= _alloc_end) { return; }
 
 	PTE *pte = (PTE *)HEAP_START;

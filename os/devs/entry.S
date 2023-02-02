@@ -83,36 +83,38 @@
 
 .text
 
+# interrupts and exceptions while in machine mode come here.
 .globl trap_vector
-# 4-bytes对齐
+# the trap vector base address must always be aligned on a 4-byte boundary
 .align 4
 trap_vector:
-	# 先保存上下文
-	csrrw	t6, mscratch, t6
+	# save context(registers).
+	csrrw	t6, mscratch, t6	# swap t6 and mscratch
 	reg_save t6
-	# reg_save mscratch # 直接这两行不行？
-	# csrr t6, mscratch 
-	mv t5, t6
-	csrr t6, mscratch
-	sw t6, 120(t5)
 
-	csrw mscratch, t5
-	sw t6, 120(t5) # 将t6的4bytes -> x[t5]+120内存处, 作为Base address
+	# Save the actual t6 register, which we swapped into
+	# mscratch
+	mv	t5, t6		# t5 points to the context of current task
+	csrr	t6, mscratch	# read t6 back from mscratch
+	sw	t6, 120(t5)	# save t6 with t5 as base
 
-	csrw mscratch, t5
+	# Restore the context pointer into mscratch
+	csrw	mscratch, t5
 
-	csrr a0, mepc
-	csrr a1, mcause
-	call trap_handler
+	# call the C trap handler in trap.c
+	csrr	a0, mepc
+	csrr	a1, mcause
+	call	trap_handler
 
-	csrw mepc, a0
+	# trap_handler will return the return address via a0.
+	csrw	mepc, a0
 
-	csrr t6, mscratch
+	# restore context(registers).
+	csrr	t6, mscratch
 	reg_restore t6
+
+	# return to whatever we were doing before trap.
 	mret
-
-
-
 
 # void switch_to(struct context *next);
 # a0: pointer to the context of the next task

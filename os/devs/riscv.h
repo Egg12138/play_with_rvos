@@ -14,6 +14,12 @@ static inline reg_t r_tp()
 	return x;
 }
 
+static inline reg_t hartid()
+{
+	reg_t x = r_tp();
+	return x;	
+}
+
 /* which hart (core) is this? */
 static inline reg_t r_mhartid()
 {
