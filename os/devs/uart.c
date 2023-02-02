@@ -200,7 +200,7 @@ void uart_isr(void)
 		if (c == -1) { break; }
 		else {
 			uart_putc((char)c);
-			// uart_putc('\n');
+			uart_putc('\n');
 		} 
 	}
 }

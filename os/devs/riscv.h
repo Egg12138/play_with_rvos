@@ -7,6 +7,7 @@
  * ref: https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/riscv.h
  */
 
+
 static inline reg_t r_tp()
 {
 	reg_t x;
@@ -104,5 +105,11 @@ static inline reg_t r_mcause()
 	asm volatile("csrr %0, mcause" : "=r" (x) );
 	return x;
 }
+
+static inline void enable_global_interrupts()
+{
+	w_mstatus(r_mstatus() | MSTATUS_MIE);
+}
+
 
 #endif /* __RISCV_H__ */

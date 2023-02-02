@@ -16,7 +16,6 @@ SRCS_C = \
 	plic.c \
 	timer.c \
 
-
 OBJS = $(SRCS_ASM:.S=.o)
 OBJS += $(SRCS_C:.c=.o)
 
@@ -36,7 +35,6 @@ os.elf: ${OBJS}
 
 run: all
 	@${QEMU} -M ? | grep virt >/dev/null || exit
-	@echo "Machine is working..."
 	@echo "Press Ctrl-A and then X to exit QEMU"
 	@echo "------------------------------------"
 	@${QEMU} ${QFLAGS} -kernel os.elf
