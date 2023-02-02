@@ -148,9 +148,12 @@ int uart_putc(char ch)
 	return uart_write_reg(THR, ch);
 }
 
-char uart_getc()
+int uart_getc()
 {
-	if (uart_read_reg(LSR) & LSR_RX_READY) {
+	int tmp = uart_read_reg(LSR) & LSR_RX_READY;
+	if (tmp) {
+	// if (uart_read_reg(LSR) & LSR_RX_READY) {
+		// return 'a';
 		return uart_read_reg(RHR);
 	} else {
 		return -1;
@@ -194,10 +197,10 @@ void uart_isr(void)
 {
 	while(1) {
 		int c = uart_getc();
-		if (c == -1) break;
+		if (c == -1) { break; }
 		else {
 			uart_putc((char)c);
-			uart_putc('\n');
+			// uart_putc('\n');
 		} 
 	}
 }

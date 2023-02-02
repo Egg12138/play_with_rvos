@@ -13,6 +13,7 @@ void external_interrupt_handler()
 {
 	int irq = plic_claim();
 	if (irq == UART0_IRQ) {
+		printf("UART0_IRQ\n");
 		uart_isr();
 	} else if (irq) {
 		printf("Unexpected interrupt irq = %d\n", irq);
@@ -62,7 +63,7 @@ void trap_test()
 	 * Synchronous exception code = 7
 	 * Store/AMO access fault
 	 */
-	*(int *)10000 = 100;
+	*(int *)0x00000000 = 100;
 
 	/*
 	 * Synchronous exception code = 5
@@ -70,6 +71,6 @@ void trap_test()
 	 */
 	//int a = *(int *)0x00000000;
 
-	uart_puts("Yeah! I'm return back from trap!\n");
+	uart_puts("Yeah! I'm back from the trap!\n");
 }
 

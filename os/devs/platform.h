@@ -31,6 +31,7 @@
 #define UART0 0x10000000L
 #define UART0_IRQ 10
 // 1-7 low->high
+#define PLIC_BASE 0x0c000000L
 #define PLIC_PRIORITY(id) (PLIC_BASE + (id) * 4)
 // 32一个，两个才存的完
 #define PLIC_PENDING(id) (PLIC_BASE + 0x1000 + ((id) / 32) * 4)
