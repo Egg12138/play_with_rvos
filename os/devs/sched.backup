@@ -2,7 +2,6 @@
 
 /* defined in entry.S */
 extern void switch_to(struct context *next);
-
 #define MAX_TASKS 10
 #define STACK_SIZE 1024
 uint8_t task_stack[MAX_TASKS][STACK_SIZE];
@@ -14,6 +13,7 @@ struct context ctx_tasks[MAX_TASKS];
  */
 static int _top = 0;
 static int _current = -1;
+
 
 void sched_init()
 {
@@ -29,7 +29,6 @@ void schedule()
 		panic("Num of task should be greater than zero!");
 		return;
 	}
-
 	_current = (_current + 1) % _top;
 	struct context *next = &(ctx_tasks[_current]);
 	switch_to(next);
@@ -54,6 +53,8 @@ int task_create(void (*start_routin)(void))
 		return -1;
 	}
 }
+
+
 
 /*
  * DESCRIPTION

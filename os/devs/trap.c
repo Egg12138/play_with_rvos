@@ -1,6 +1,8 @@
 #include "os.h"
 
 extern void trap_vector(void);
+extern void uart_isr(void);
+extern void timer_handler(void);
 
 void trap_init()
 {
@@ -9,19 +11,21 @@ void trap_init()
 	 */
 	w_mtvec((reg_t)trap_vector);
 }
+
 void external_interrupt_handler()
 {
 	int irq = plic_claim();
-	if (irq == UART0_IRQ) {
-		uart_isr();
+
+	if (irq == UART0_IRQ){
+      		uart_isr();
 	} else if (irq) {
-		printf("Unexpected interrupt irq = %d\n", irq);
+		printf("unexpected interrupt irq = %d\n", irq);
 	}
+	
 	if (irq) {
 		plic_complete(irq);
 	}
 }
-
 
 reg_t trap_handler(reg_t epc, reg_t cause)
 {
@@ -32,16 +36,14 @@ reg_t trap_handler(reg_t epc, reg_t cause)
 		/* Asynchronous trap - interrupt */
 		switch (cause_code) {
 		case 3:
-			uart_puts("software interruption!:");
-			printf("mcause: %dL, epc: %d\n", cause, return_pc);
+			uart_puts("software interruption!\n");
 			break;
 		case 7:
-			// uart_puts("timer interruption!\n");
-			uart_puts("clock: ");
-			timer_interrupt_handler();
+			uart_puts("timer interruption!\n");
+			timer_handler();
 			break;
 		case 11:
-			printf("[%lu], epc: %lu\n", cause_code, return_pc);
+			uart_puts("external interruption!\n");
 			external_interrupt_handler();
 			break;
 		default:
@@ -72,6 +74,6 @@ void trap_test()
 	 */
 	//int a = *(int *)0x00000000;
 
-	uart_puts("Yeah! I'm back from the trap!\n");
+	uart_puts("Yeah! I'm return back from trap!\n");
 }
 

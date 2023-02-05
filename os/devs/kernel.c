@@ -31,9 +31,6 @@ void start_kernel(void)
 	os_main();
 
 	schedule();
-	while (1) {
-		int x = uart_getc();
-	}	
 
 	uart_puts("Would not go here!\n");
 	while (1) {}; // stop here!

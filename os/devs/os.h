@@ -11,6 +11,7 @@
 /* uart */
 extern int uart_putc(char ch);
 extern void uart_puts(char *s);
+extern int uart_getc(void);
 
 /* printf */
 extern int  printf(const char* s, ...);
@@ -55,7 +56,7 @@ struct context {
 	reg_t t5;
 	reg_t t6;
 };
-extern void uart_isr(void);
+
 extern int  task_create(void (*task)(void));
 extern void task_delay(volatile int count);
 extern void task_yield();
@@ -64,6 +65,5 @@ extern void task_yield();
 extern int plic_claim(void);
 extern void plic_complete(int irq);
 
-extern void timer_interrupt_handler(void);
 
 #endif /* __OS_H__ */

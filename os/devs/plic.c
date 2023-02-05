@@ -42,8 +42,7 @@ void plic_init(void)
 	w_mie(r_mie() | MIE_MEIE);
 
 	/* enable machine-mode global interrupts. */
-	// w_mstatus(r_mstatus() | MSTATUS_MIE);
-	enable_global_interrupts();
+	w_mstatus(r_mstatus() | MSTATUS_MIE);
 }
 
 /* 

@@ -7,18 +7,11 @@
  * ref: https://github.com/mit-pdos/xv6-riscv/blob/riscv/kernel/riscv.h
  */
 
-
 static inline reg_t r_tp()
 {
 	reg_t x;
 	asm volatile("mv %0, tp" : "=r" (x) );
 	return x;
-}
-
-static inline reg_t hartid()
-{
-	reg_t x = r_tp();
-	return x;	
 }
 
 /* which hart (core) is this? */
@@ -105,11 +98,5 @@ static inline reg_t r_mcause()
 	asm volatile("csrr %0, mcause" : "=r" (x) );
 	return x;
 }
-
-static inline void enable_global_interrupts()
-{
-	w_mstatus(r_mstatus() | MSTATUS_MIE);
-}
-
 
 #endif /* __RISCV_H__ */
