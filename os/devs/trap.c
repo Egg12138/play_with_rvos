@@ -13,7 +13,6 @@ void external_interrupt_handler()
 {
 	int irq = plic_claim();
 	if (irq == UART0_IRQ) {
-		printf("UART0_IRQ\n");
 		uart_isr();
 	} else if (irq) {
 		printf("Unexpected interrupt irq = %d\n", irq);
@@ -22,7 +21,6 @@ void external_interrupt_handler()
 		plic_complete(irq);
 	}
 }
-
 
 
 reg_t trap_handler(reg_t epc, reg_t cause)
@@ -34,14 +32,16 @@ reg_t trap_handler(reg_t epc, reg_t cause)
 		/* Asynchronous trap - interrupt */
 		switch (cause_code) {
 		case 3:
-			uart_puts("software interruption!\n");
+			uart_puts("software interruption!:");
+			printf("mcause: %dL, epc: %d\n", cause, return_pc);
 			break;
 		case 7:
-			uart_puts("timer interruption!\n");
+			// uart_puts("timer interruption!\n");
+			uart_puts("clock: ");
 			timer_interrupt_handler();
 			break;
 		case 11:
-			uart_puts("external interruption!\n");
+			printf("[%lu], epc: %lu\n", cause_code, return_pc);
 			external_interrupt_handler();
 			break;
 		default:

@@ -92,6 +92,7 @@ trap_vector:
 	csrrw	t6, mscratch, t6	# swap t6 and mscratch
 	reg_save t6
 
+
 	# Save the actual t6 register, which we swapped into
 	# mscratch
 	mv	t5, t6		# t5 points to the context of current task
@@ -121,15 +122,24 @@ trap_vector:
 .globl switch_to
 .align 4
 switch_to:
-	csrrw	t6, mscratch, t6	# swap t6 and mscratch
-	beqz	t6, 1f			# Notice: previous task may be NULL
-	reg_save t6			# save context of prev task
+	# csrrw	t6, mscratch, t6	# swap t6 and mscratch
+	# beqz	t6, 1			# Notice: previous task may be NULL
+	# reg_save t6			# save context of prev task
 
+	# another version:
+	csrrw   t6, mscratch, t6 # 不交换而直接使用csrr会导致t6的丢失
+	beqz t6, 1f
+	reg_save t6
+
+	mv t5, t6
+	csrr t6, mscratch # 恢复t6
+
+	sw t6, 120(t5)
 	# Save the actual t6 register, which we swapped into
 	# mscratch
-	mv	t5, t6		# t5 points to the context of current task
-	csrr	t6, mscratch	# read t6 back from mscratch
-	sw	t6, 120(t5)	# save t6 with t5 as base
+	# mv	t5, t6		# t5 points to the context of current task  addi t5, t6, 0, t6 -> t5
+	# csrr	t6, mscratch	# read t6 back from mscratch
+	# sw	t6, 120(t5)	# save t6 with t5 as base
 
 1:
 	# switch mscratch to point to the context of the next task

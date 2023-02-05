@@ -2,7 +2,6 @@
 
 /* defined in entry.S */
 extern void switch_to(struct context *next);
-
 #define MAX_TASKS 10
 #define STACK_SIZE 1024
 uint8_t task_stack[MAX_TASKS][STACK_SIZE];
@@ -54,6 +53,8 @@ int task_create(void (*start_routin)(void))
 		return -1;
 	}
 }
+
+
 
 /*
  * DESCRIPTION

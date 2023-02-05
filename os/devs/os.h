@@ -64,6 +64,6 @@ extern void task_yield();
 extern int plic_claim(void);
 extern void plic_complete(int irq);
 
-extern void timer_handler(void);
+extern void timer_interrupt_handler(void);
 
 #endif /* __OS_H__ */

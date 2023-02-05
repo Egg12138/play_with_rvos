@@ -13,7 +13,8 @@ void timer_init()
 {
 	timer_interval_load(TIMER_INTERVAL);
 	w_mie(r_mie() | MIE_MTIE);
-	enable_global_interrupts();
+	w_mstatus(r_mstatus() | MSTATUS_MIE);
+	// enable_global_interrupts();
 }
 
 void timer_interrupt_handler() 
