@@ -55,6 +55,8 @@ struct context {
 	reg_t t4;
 	reg_t t5;
 	reg_t t6;
+
+	reg_t epc;
 };
 
 extern int  task_create(void (*task)(void));

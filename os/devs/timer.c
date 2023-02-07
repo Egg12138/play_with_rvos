@@ -1,4 +1,4 @@
-#include "os.h"
+	#include "os.h"
 /* interval ~= 1s */
 #define TIMER_INTERVAL CLINT_TIMEBASE_FREQ
 
@@ -25,13 +25,13 @@ void timer_init()
 	w_mie(r_mie() | MIE_MTIE);
 
 	/* enable machine-mode global interrupts. */
-	w_mstatus(r_mstatus() | MSTATUS_MIE);
+	// w_mstatus(r_mstatus() | MSTATUS_MIE);
 }
-
+	
 void timer_handler() 
 {
 	_tick++;
-	printf("%d\n", _tick);
-
+	printf("%d,\n", _tick);
 	timer_load(TIMER_INTERVAL);
+	schedule();
 }

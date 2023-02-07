@@ -25,12 +25,14 @@ void sched_init()
  */
 void schedule()
 {
+
 	if (_top <= 0) {
 		panic("Num of task should be greater than zero!");
 		return;
 	}
 
 	_current = (_current + 1) % _top;
+	printf("<=>[%d]", _current);
 	struct context *next = &(ctx_tasks[_current]);
 	switch_to(next);
 }
@@ -62,7 +64,8 @@ int task_create(void (*start_routin)(void))
  */
 void task_yield()
 {
-	schedule();
+	int hartid = r_mhartid();
+	*(uint32_t*)CLINT_MSIP(hartid) = 1;
 }
 
 /*

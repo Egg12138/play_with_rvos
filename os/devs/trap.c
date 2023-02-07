@@ -34,14 +34,19 @@ reg_t trap_handler(reg_t epc, reg_t cause)
 	
 	if (cause & 0x80000000) {
 		/* Asynchronous trap - interrupt */
+		int id = r_mhartid();
 		switch (cause_code) {
+		// case 1: // S mode
 		case 3:
-			uart_puts("software interruption!\n");
+			*(uint32_t*)CLINT_MSIP(id) = 0;
+			schedule();
 			break;
+		// case 5: // S mode
 		case 7:
-			uart_puts("timer interruption!\n");
+			// uart_puts("timer interruption!\n");
 			timer_handler();
 			break;
+		// case 9: // S mode
 		case 11:
 			uart_puts("external interruption!\n");
 			external_interrupt_handler();
