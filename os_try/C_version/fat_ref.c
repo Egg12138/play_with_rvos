@@ -118,8 +118,9 @@ void *map_disk(const char *fname) {
 
   printf("%s: DOS/MBR boot sector, ", fname);
   printf("OEM-ID \"%s\", ", hdr->BS_OEMName);
+
   printf("sectors/cluster %d, ", hdr->BPB_SecPerClus);
-  printf("sectors %d, ", hdr->BPB_TotSec32);
+  // BUG: 有错
   printf("sectors %d, ", hdr->BPB_TotSec32);
   printf("sectors/FAT %d, ", hdr->BPB_FATSz32);
   printf("serial number 0x%x\n", hdr->BS_VolID);
