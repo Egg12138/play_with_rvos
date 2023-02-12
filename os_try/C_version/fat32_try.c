@@ -111,7 +111,18 @@ struct fat32hdr {
 } __attribute__((packed));
 
 struct fat32dent {
-
+        u8  DIR_Name[11];
+        u8  DIR_Attr;
+        u8  DIR_NTRes;
+        u8  DIR_CrtTimeTenth;
+        u16 DIR_CrtTime;
+        u16 DIR_CrtDate;
+        u16 DIR_LastAccDate;
+        u16 DIR_FstClusHI;
+        u16 DIR_WrtTime;
+        u16 DIR_WrtDate;
+        u16 DIR_FstClusLO;
+        u32 DIR_FileSize;
 } __attribute__((packed));
 
 typedef enum FatType {
@@ -125,6 +136,14 @@ typedef enum FatType {
 #define ENTRY_SZ 32   // 32 bits
 #define ENTRY16_BYTS 2
 #define ENTRY32_BYTS 4
+#define DIR_N
+
+#define ATTR_READ_ONLY 0x01
+#define ATTR_HIDDEN 0x02
+#define ATTR_SYSTE 0x04
+#define ATTR_VOLUME_ID 0x08
+#define ATTR_DIRECTORY 0x10
+#define ATTR_ARCHIVE 0x20
 
 struct fat32hdr *hdr;
 void *map_disk2mem(const char *fname);
@@ -133,6 +152,7 @@ void report_fat(char *fname);
 void report_parameter(void);
 //TODO: 返回类型确定一下，目前都是void.
 void *access_entry4cluster(int N);
+
 fatType fat_type(void);
 int input_invalid(int argcnt, char *argvec);
 u32 to_cluster(int N);
